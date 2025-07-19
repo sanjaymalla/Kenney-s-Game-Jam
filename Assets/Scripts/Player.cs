@@ -7,22 +7,37 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     bool isGrounded;
 
+    private Animator anim;
+
     public bool isMoving { get; private set; }
     public bool isJumping { get; private set; }
+    public bool isRecharge { get; private set; }
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        float moveX = Input.GetAxis("Horizontal");
-        rb.linearVelocity = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
+        float horizontalInput = Input.GetAxis("Horizontal");
+        //flipping player left and right while moving
+        if (horizontalInput > 0.1f)
+        {
+            transform.localScale = Vector3.one;
+        }
 
-        isMoving = Mathf.Abs(moveX) >0.1f;
+        else if (horizontalInput < -0.1f)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+
+        rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
+
+        isMoving = Mathf.Abs(horizontalInput) >0.1f;
 
         if (isGrounded)
         {
@@ -34,12 +49,21 @@ public class Player : MonoBehaviour
         }
 
         isJumping = !isGrounded;
+
+        anim.SetBool("run", horizontalInput != 0);
+        anim.SetBool("grounded", isGrounded);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.CompareTag("Ground"))
         {
+            isGrounded = true;
+        }
+
+        if(collision.gameObject.CompareTag("Recharge"))
+        {
+            isRecharge = true;
             isGrounded = true;
         }
     }
@@ -49,6 +73,11 @@ public class Player : MonoBehaviour
         if(collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
+        }
+
+        if (collision.gameObject.CompareTag("Recharge"))
+        {
+            isRecharge = false;
         }
     }
 }

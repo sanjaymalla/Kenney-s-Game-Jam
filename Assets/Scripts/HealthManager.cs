@@ -9,6 +9,7 @@ public class HealthManager : MonoBehaviour
     public float baseDecayRate = 1f;
     public float moveDecayRate = 3f;
     public float jumpDecayRate = 5f;
+    public float rechargeRate = 10f;
 
     private float currentDecayRate;
 
@@ -26,7 +27,15 @@ public class HealthManager : MonoBehaviour
     {
         UpdateDecayRate();
 
-        healthAmount -= currentDecayRate * Time.deltaTime;
+        if (player != null && player.isRecharge)
+        {
+            healthAmount += rechargeRate * Time.deltaTime;
+        }
+        else
+        {
+            healthAmount -= currentDecayRate * Time.deltaTime;
+        }
+
         healthAmount = Mathf.Clamp(healthAmount, 0f, 100f);
 
         healthBar.fillAmount = healthAmount / 100f;
@@ -70,4 +79,6 @@ public class HealthManager : MonoBehaviour
         // Example: Disable player controller
         // GetComponent<PlayerController>().enabled = false;
     }
+
+    
 }
