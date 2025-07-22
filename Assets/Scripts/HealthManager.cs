@@ -10,7 +10,6 @@ public class HealthManager : MonoBehaviour
     public float moveDecayRate = 3f;
     public float jumpDecayRate = 5f;
     public float rechargeRate = 10f;
-
     private float currentDecayRate;
 
     private Player player;
@@ -26,6 +25,7 @@ public class HealthManager : MonoBehaviour
     void Update()
     {
         UpdateDecayRate();
+
 
         if (player != null && player.isRecharge)
         {
@@ -80,5 +80,4 @@ public class HealthManager : MonoBehaviour
         // GetComponent<PlayerController>().enabled = false;
     }
 
-    
 }

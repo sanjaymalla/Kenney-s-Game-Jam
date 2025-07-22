@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -8,6 +9,7 @@ public class Player : MonoBehaviour
     bool isGrounded;
 
     private Animator anim;
+    private HealthManager healthManager;
 
     public bool isMoving { get; private set; }
     public bool isJumping { get; private set; }
@@ -18,6 +20,8 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+
+        healthManager = FindAnyObjectByType<HealthManager>();
     }
 
     // Update is called once per frame
@@ -80,4 +84,19 @@ public class Player : MonoBehaviour
             isRecharge = false;
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Battery"))
+        {
+            if(healthManager != null)
+            {
+                healthManager.Heal(30f);
+            }
+
+            Destroy(collision.gameObject);
+        }
+    }
+
+
 }
